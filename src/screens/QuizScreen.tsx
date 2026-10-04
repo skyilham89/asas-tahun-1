@@ -47,7 +47,6 @@ export function QuizScreen({ mode, onFinish, onQuit }: { mode: QuizMode; onFinis
   const [selected, setSelected] = useState<string | null>(null)
   const [status, setStatus] = useState<Status>('answering')
   const [answered, setAnswered] = useState(0)
-  const [correct, setCorrect] = useState(0)
   const [streak, setStreak] = useState(0)
   const [showConfetti, setShowConfetti] = useState(false)
   const [timeLeft, setTimeLeft] = useState(CHALLENGE_SECONDS)
@@ -84,7 +83,9 @@ export function QuizScreen({ mode, onFinish, onQuit }: { mode: QuizMode; onFinis
     return () => clearTimeout(id)
   }, [isChallenge, timeLeft, finish])
 
-  useEffect(() => () => advanceTimer.current && clearTimeout(advanceTimer.current), [])
+  useEffect(() => () => {
+    if (advanceTimer.current) clearTimeout(advanceTimer.current)
+  }, [])
 
   function goNext(answeredCount: number) {
     if (!isChallenge && answeredCount >= TOPIC_QUESTIONS) {
@@ -109,7 +110,6 @@ export function QuizScreen({ mode, onFinish, onQuit }: { mode: QuizMode; onFinis
       playCorrect()
       setStatus('correct')
       correctRef.current += 1
-      setCorrect(correctRef.current)
       setStreak((s) => s + 1)
       correctByTopic.current[question.topicId] = (correctByTopic.current[question.topicId] ?? 0) + 1
       setShowConfetti(true)

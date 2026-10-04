@@ -153,7 +153,7 @@ export default function App() {
       return (
         <CategoryScreen
           profile={activeProfile}
-          onPick={(c) => setScreen({ name: c === 'matematik' ? 'topics' : 'reading-levels' })}
+          onPick={(c) => setScreen(c === 'matematik' ? { name: 'topics' } : { name: 'reading-levels' })}
           onBack={() => setScreen({ name: 'profiles' })}
         />
       )
@@ -203,7 +203,7 @@ export default function App() {
         <ReadingLevelScreen
           profile={activeProfile}
           onStart={(level, mode: ReadingMode) =>
-            setScreen({ name: mode === 'belajar' ? 'reading-learn' : 'reading-quiz', level })
+            setScreen(mode === 'belajar' ? { name: 'reading-learn', level } : { name: 'reading-quiz', level })
           }
           onBack={() => setScreen({ name: 'category' })}
         />

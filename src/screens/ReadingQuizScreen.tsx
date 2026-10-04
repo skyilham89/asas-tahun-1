@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { generateReadingQuiz, type ReadingQuestion } from '../lib/readingGenerator'
 import { getReadingLevel } from '../data/reading'
 import { playCorrect, playWrong, playTap, speak, stopSpeaking } from '../lib/audio'
-import { SyllableWord, syllableColor } from '../components/SyllableWord'
+import { syllableColor } from '../components/SyllableWord'
 import { SpeakerButton } from '../components/SpeakerButton'
 import { Confetti } from '../components/Confetti'
 import { BackButton } from './ProfileScreen'
@@ -29,7 +29,6 @@ export function ReadingQuizScreen({
   const data = getReadingLevel(level)
   const [questions] = useState<ReadingQuestion[]>(() => generateReadingQuiz(level, QUESTION_COUNT))
   const [qi, setQi] = useState(0)
-  const [correct, setCorrect] = useState(0)
   // Kiraan sebenar disimpan dalam ref supaya finish() sentiasa baca nilai terkini
   // (elak stale closure apabila soalan terakhir dijawab betul melalui pemasa).
   const correctRef = useRef(0)
@@ -69,7 +68,9 @@ export function ReadingQuizScreen({
     }
   }, [qi, q])
 
-  useEffect(() => () => advanceTimer.current && clearTimeout(advanceTimer.current), [])
+  useEffect(() => () => {
+    if (advanceTimer.current) clearTimeout(advanceTimer.current)
+  }, [])
 
   if (!q || !data) return null
 
@@ -86,7 +87,6 @@ export function ReadingQuizScreen({
     playCorrect()
     setStatus('correct')
     correctRef.current += 1
-    setCorrect(correctRef.current)
     setShowConfetti(true)
     advanceTimer.current = setTimeout(goNext, 1300)
   }
