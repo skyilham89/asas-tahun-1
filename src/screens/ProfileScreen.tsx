@@ -72,7 +72,7 @@ export function ProfileScreen({
                   className="flex w-full flex-col items-center gap-2 rounded-3xl bg-white p-5 shadow-md transition active:scale-95 disabled:active:scale-100"
                 >
                   <span className={`text-5xl sm:text-6xl ${editing ? 'animate-wiggle' : ''}`}>{p.avatar}</span>
-                  <span className="text-lg font-bold text-slate-700">{p.name}</span>
+                  <span className="w-full break-words text-center text-lg font-bold leading-tight text-slate-700">{p.name}</span>
                   <span className="text-sm font-semibold text-amber-500">⭐ {p.stars}</span>
                 </button>
                 {editing && (
@@ -134,13 +134,13 @@ export function ProfileScreen({
 
       {creating && (
         <div className="flex flex-col gap-5 rounded-3xl bg-white p-6 shadow-md">
-          <label className="text-lg font-bold text-slate-700">Nama kamu:</label>
+          <label className="text-lg font-bold text-slate-700">Nama penuh kamu:</label>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
-            placeholder="Tulis nama di sini…"
-            maxLength={12}
+            placeholder="Tulis nama penuh di sini…"
+            maxLength={40}
             autoFocus
             className="rounded-2xl border-4 border-violet-300 px-4 py-3 text-xl font-bold text-slate-700 outline-none focus:border-violet-500"
           />
