@@ -1,0 +1,26 @@
+{
+  "pointAndEdit": {
+    "priorityPaths": {
+      "prefer": [],
+      "deprioritize": [],
+      "exclude": []
+    },
+    "libraryPaths": {
+      "local": [],
+      "external": []
+    },
+    "pathClassification": {
+      "classifier": "sonnet"
+    },
+    "exclusions": [],
+    "generated": {
+      "schemaVersion": 2,
+      "source": "setup-agent.point-and-edit-path-classifier",
+      "prompt": "same-turn-setup-subagent-v5",
+      "model": "claude-sonnet-4-6",
+      "createdAt": "2026-10-03T00:00:00.000Z",
+      "confidence": 0,
+      "explanation": "The repository directory contains no files, making it impossible to identify any source structure, framework, or UI component paths for classification."
+    }
+  }
+}
