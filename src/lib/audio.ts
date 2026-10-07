@@ -15,6 +15,40 @@ function getCtx(): AudioContext | null {
   return ctx
 }
 
+// Safari (dan sesetengah pelayar) memulakan AudioContext dalam keadaan
+// "suspended" dan resume() berjalan secara tak segerak. Jadi nada PERTAMA
+// selepas sentuhan boleh hilang kerana ia dijadualkan sebelum konteks bangun.
+// Kita "buka kunci" audio pada interaksi pertama: cipta konteks, resume, dan
+// mainkan satu bunyi senyap supaya konteks benar-benar hidup selepas itu.
+if (typeof window !== 'undefined') {
+  let unlocked = false
+  const unlock = () => {
+    if (unlocked) return
+    const ac = getCtx()
+    if (!ac) return
+    void ac.resume()
+    // Bunyi senyap untuk "menghidupkan" konteks pada Safari.
+    try {
+      const buffer = ac.createBuffer(1, 1, 22050)
+      const src = ac.createBufferSource()
+      src.buffer = buffer
+      src.connect(ac.destination)
+      src.start(0)
+    } catch {
+      // abaikan — tidak kritikal
+    }
+    if (ac.state === 'running') {
+      unlocked = true
+      window.removeEventListener('pointerdown', unlock)
+      window.removeEventListener('touchstart', unlock)
+      window.removeEventListener('keydown', unlock)
+    }
+  }
+  window.addEventListener('pointerdown', unlock)
+  window.addEventListener('touchstart', unlock)
+  window.addEventListener('keydown', unlock)
+}
+
 function tone(freq: number, start: number, duration: number, type: OscillatorType = 'sine', gain = 0.2) {
   const ac = getCtx()
   if (!ac) return
