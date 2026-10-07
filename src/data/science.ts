@@ -92,6 +92,10 @@ export const SCIENCE_UNITS: ScienceUnit[] = [
       { emoji: '👀', title: 'Memerhati', desc: 'Kita guna mata untuk melihat dan memerhati benda di sekeliling.' },
       { emoji: '⚖️', title: 'Membanding', desc: 'Kita boleh banding saiz: besar atau kecil, panjang atau pendek.' },
       { emoji: '🗂️', title: 'Mengelas', desc: 'Mengumpul benda yang sama, contohnya warna sama atau bentuk sama.' },
+      { emoji: '🔴', title: 'Kumpul Ikut Warna', desc: 'Kita boleh kumpulkan benda ikut warna: merah, biru, kuning dan hijau.' },
+      { emoji: '🔺', title: 'Kumpul Ikut Bentuk', desc: 'Benda ada bentuk berbeza: bulat, segi empat dan segi tiga.' },
+      { emoji: '📏', title: 'Kumpul Ikut Saiz', desc: 'Kita banding saiz benda: besar, sederhana atau kecil.' },
+      { emoji: '🖐️', title: 'Pancaindera', desc: 'Kita memerhati guna mata, telinga, hidung, lidah dan kulit.' },
     ],
     questions: [
       { kind: 'pilih', prompt: 'Yang mana paling BESAR?', speak: 'Yang mana paling besar?', image: '🐘', choices: ['🐘', '🐈', '🐜'], answer: '🐘', solution: 'Gajah 🐘 paling besar.' },
@@ -117,6 +121,8 @@ export const SCIENCE_UNITS: ScienceUnit[] = [
       { emoji: '👃', title: 'Hidung — Menghidu', desc: 'Kita guna hidung untuk menghidu bau.' },
       { emoji: '👅', title: 'Lidah — Merasa', desc: 'Kita guna lidah untuk merasa manis, masam dan masin.' },
       { emoji: '✋', title: 'Kulit — Menyentuh', desc: 'Kita guna kulit untuk rasa sejuk, panas, licin atau kasar.' },
+      { emoji: '🖐️', title: 'Lima Deria', desc: 'Kita ada lima deria untuk mengenali dunia di sekeliling kita.' },
+      { emoji: '🛡️', title: 'Menjaga Deria', desc: 'Kita perlu jaga mata, telinga dan gigi supaya sentiasa sihat.' },
     ],
     questions: [
       { kind: 'label', prompt: 'Yang mana MATA?', speak: 'Yang mana mata?', subject: '🧒', parts: [{ label: 'Mata', x: 38, y: 46 }, { label: 'Hidung', x: 50, y: 58 }, { label: 'Mulut', x: 50, y: 72 }], targetIndex: 0, solution: 'Mata di bahagian atas muka — untuk melihat.' },
@@ -142,6 +148,10 @@ export const SCIENCE_UNITS: ScienceUnit[] = [
       { emoji: '🐠', title: 'Sirip & Sisik', desc: 'Ikan ada sirip untuk berenang dan sisik pada badannya.' },
       { emoji: '🐘', title: 'Belalai', desc: 'Gajah ada belalai yang panjang untuk minum air.' },
       { emoji: '🐈', title: 'Ekor & Kaki', desc: 'Banyak haiwan ada ekor dan kaki untuk bergerak.' },
+      { emoji: '🦁', title: 'Bulu', desc: 'Banyak haiwan ada bulu untuk memanaskan badan mereka.' },
+      { emoji: '🐢', title: 'Cengkerang', desc: 'Kura-kura ada cengkerang keras untuk melindungi badannya.' },
+      { emoji: '🦌', title: 'Tanduk', desc: 'Sesetengah haiwan ada tanduk di atas kepala.' },
+      { emoji: '🐍', title: 'Cara Bergerak', desc: 'Haiwan bergerak cara berbeza: berjalan, terbang, berenang dan melata.' },
     ],
     questions: [
       { kind: 'label', diagram: 'bird', prompt: 'Yang mana PARUH burung?', speak: 'Yang mana paruh burung?', subject: '🐦', parts: [{ label: 'Paruh', x: 13, y: 38 }, { label: 'Kepak', x: 52, y: 46 }, { label: 'Ekor', x: 88, y: 46 }], targetIndex: 0, solution: 'Paruh di hadapan kepala — burung guna untuk makan.' },
@@ -166,6 +176,9 @@ export const SCIENCE_UNITS: ScienceUnit[] = [
       { emoji: '🍃', title: 'Daun', desc: 'Daun berwarna hijau dan membuat makanan untuk tumbuhan.' },
       { emoji: '🪵', title: 'Batang', desc: 'Batang menegakkan tumbuhan dan membawa air ke atas.' },
       { emoji: '🌱', title: 'Akar', desc: 'Akar di dalam tanah menyerap air untuk tumbuhan.' },
+      { emoji: '🍎', title: 'Buah', desc: 'Buah tumbuh daripada bunga dan ada biji di dalamnya.' },
+      { emoji: '🌰', title: 'Biji Benih', desc: 'Biji benih ditanam dan tumbuh menjadi pokok baharu.' },
+      { emoji: '☀️', title: 'Keperluan Tumbuhan', desc: 'Tumbuhan perlukan air, cahaya matahari dan udara untuk hidup.' },
     ],
     questions: [
       { kind: 'label', diagram: 'plant', prompt: 'Yang mana BUNGA?', speak: 'Yang mana bunga?', subject: '🌻', parts: [{ label: 'Bunga', x: 50, y: 10 }, { label: 'Daun', x: 65, y: 46 }, { label: 'Batang', x: 50, y: 56 }, { label: 'Akar', x: 50, y: 90 }], targetIndex: 0, solution: 'Bunga di bahagian paling atas tumbuhan.' },
@@ -190,6 +203,9 @@ export const SCIENCE_UNITS: ScienceUnit[] = [
       { emoji: '🪨', title: 'Benda Bukan Hidup', desc: 'Benda bukan hidup tidak makan dan tidak membesar.' },
       { emoji: '🌳', title: 'Tumbuhan Hidup', desc: 'Pokok juga hidup — ia membesar dan perlukan air.' },
       { emoji: '🚗', title: 'Mesin Bukan Hidup', desc: 'Kereta bergerak, tetapi ia bukan hidup kerana tidak membesar.' },
+      { emoji: '🍚', title: 'Makan', desc: 'Benda hidup perlu makan untuk mendapat tenaga.' },
+      { emoji: '🌬️', title: 'Bernafas', desc: 'Benda hidup bernafas untuk terus hidup.' },
+      { emoji: '🐣', title: 'Membesar', desc: 'Benda hidup membesar daripada kecil menjadi besar.' },
     ],
     questions: [
       { kind: 'sort', prompt: 'Hidup atau bukan hidup?', speak: 'Anjing hidup atau bukan hidup?', image: '🐶', itemLabel: 'Anjing', bins: ['Hidup 💚', 'Bukan Hidup 🪨'], answer: 'Hidup 💚', solution: 'Anjing 🐶 bernafas dan makan — ia hidup.' },
