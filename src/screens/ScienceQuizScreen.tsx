@@ -5,7 +5,7 @@ import { SpeakerButton } from '../components/SpeakerButton'
 import { Confetti } from '../components/Confetti'
 import { BackButton } from './ProfileScreen'
 
-const QUESTION_COUNT = 6
+const QUESTION_COUNT = 8
 
 export interface ScienceResult {
   level: number
