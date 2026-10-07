@@ -7,6 +7,7 @@ export const TOPICS: Topic[] = [
     subtitle: 'Banding & susun nombor',
     emoji: '🔢',
     gradient: 'from-sky-400 to-blue-500',
+    color: 'blue',
     badge: { id: 'raja-nombor', name: 'Raja Nombor', emoji: '👑', requiredCorrect: 10 },
   },
   {
@@ -15,6 +16,7 @@ export const TOPICS: Topic[] = [
     subtitle: 'Campur dan tolak',
     emoji: '➕',
     gradient: 'from-emerald-400 to-green-500',
+    color: 'green',
     badge: { id: 'raja-tambah', name: 'Raja Tambah', emoji: '🦸', requiredCorrect: 10 },
   },
   {
@@ -23,6 +25,7 @@ export const TOPICS: Topic[] = [
     subtitle: 'Sen dan Ringgit',
     emoji: '💰',
     gradient: 'from-amber-400 to-orange-500',
+    color: 'orange',
     badge: { id: 'kaya-raya', name: 'Kaya Raya', emoji: '🤑', requiredCorrect: 10 },
   },
   {
@@ -31,6 +34,7 @@ export const TOPICS: Topic[] = [
     subtitle: 'Baca muka jam',
     emoji: '🕐',
     gradient: 'from-violet-400 to-purple-500',
+    color: 'purple',
     badge: { id: 'pakar-jam', name: 'Pakar Jam', emoji: '⏰', requiredCorrect: 10 },
   },
   {
@@ -39,6 +43,7 @@ export const TOPICS: Topic[] = [
     subtitle: 'Bentuk 2D & 3D',
     emoji: '🔺',
     gradient: 'from-pink-400 to-rose-500',
+    color: 'red',
     badge: { id: 'raja-bentuk', name: 'Raja Bentuk', emoji: '🎨', requiredCorrect: 10 },
   },
 ]

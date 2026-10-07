@@ -1,9 +1,32 @@
 {
   "pointAndEdit": {
     "priorityPaths": {
-      "prefer": [],
-      "deprioritize": [],
-      "exclude": []
+      "prefer": [
+        "src/screens/**/*.{tsx,ts}",
+        "src/App.tsx",
+        "src/components/**/*.{tsx,ts}"
+      ],
+      "deprioritize": [
+        "src/index.css",
+        "src/lib/**/*.{ts,tsx}",
+        "src/data/**/*.{ts,tsx}",
+        "src/types.ts",
+        "src/main.tsx"
+      ],
+      "exclude": [
+        "**/*.figma.ts",
+        "**/*.figma.tsx",
+        "**/*.figma.js",
+        "**/*.figma.jsx",
+        "**/*.figma.template.*",
+        "**/*.test.{ts,tsx}",
+        "**/*.spec.{ts,tsx}",
+        "dist/**",
+        "public/**",
+        ".figma/**",
+        ".github/**",
+        "node_modules/**"
+      ]
     },
     "libraryPaths": {
       "local": [],
@@ -12,15 +35,64 @@
     "pathClassification": {
       "classifier": "sonnet"
     },
-    "exclusions": [],
+    "exclusions": [
+      {
+        "glob": "**/*.figma.ts",
+        "reason": "Figma mapping files are Code Connect artifacts, not UI source anchors for point-and-edit."
+      },
+      {
+        "glob": "**/*.figma.tsx",
+        "reason": "Figma mapping files are Code Connect artifacts, not UI source anchors for point-and-edit."
+      },
+      {
+        "glob": "**/*.figma.js",
+        "reason": "Figma mapping files are Code Connect artifacts, not UI source anchors for point-and-edit."
+      },
+      {
+        "glob": "**/*.figma.jsx",
+        "reason": "Figma mapping files are Code Connect artifacts, not UI source anchors for point-and-edit."
+      },
+      {
+        "glob": "**/*.figma.template.*",
+        "reason": "Figma mapping template files are Code Connect artifacts, not UI source anchors for point-and-edit."
+      },
+      {
+        "glob": "**/*.test.{ts,tsx}",
+        "reason": "Test files are not UI source anchors."
+      },
+      {
+        "glob": "**/*.spec.{ts,tsx}",
+        "reason": "Spec files are not UI source anchors."
+      },
+      {
+        "glob": "dist/**",
+        "reason": "Build output — not source."
+      },
+      {
+        "glob": "public/**",
+        "reason": "Static assets served verbatim; not React component source."
+      },
+      {
+        "glob": ".figma/**",
+        "reason": "Figma Make configuration directory, not UI component source."
+      },
+      {
+        "glob": ".github/**",
+        "reason": "CI/CD workflow configuration, not UI source."
+      },
+      {
+        "glob": "node_modules/**",
+        "reason": "External dependency code, not editable project source."
+      }
+    ],
     "generated": {
       "schemaVersion": 2,
       "source": "setup-agent.point-and-edit-path-classifier",
       "prompt": "same-turn-setup-subagent-v5",
       "model": "claude-sonnet-4-6",
-      "createdAt": "2026-10-03T00:00:00.000Z",
-      "confidence": 0,
-      "explanation": "The repository directory contains no files, making it impossible to identify any source structure, framework, or UI component paths for classification."
+      "createdAt": "2026-10-07T00:00:00.000Z",
+      "confidence": 0.95,
+      "explanation": "Single-app Vite + React + TypeScript project with a clear screens/components split, no shared local design-system library, and only react/react-dom as external dependencies, making path classification straightforward and high-confidence."
     }
   }
 }

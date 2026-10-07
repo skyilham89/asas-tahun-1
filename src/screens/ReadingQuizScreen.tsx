@@ -136,18 +136,18 @@ export function ReadingQuizScreen({
   const progressPct = (qi / QUESTION_COUNT) * 100
 
   return (
-    <div className="relative flex min-h-full flex-col gap-4 bg-gradient-to-b from-fuchsia-100 to-rose-100 p-5">
+    <div className="relative flex min-h-full flex-col gap-4 bg-[color:var(--color-duo-snow)] p-5">
       {showConfetti && <Confetti />}
 
       {/* Bar atas */}
       <div className="flex items-center gap-3">
         <BackButton onClick={onQuit} />
         <div className="flex-1">
-          <div className="h-5 overflow-hidden rounded-full bg-white/70 shadow-inner">
-            <div className="h-full rounded-full bg-fuchsia-400 transition-all duration-500" style={{ width: `${progressPct}%` }} />
+          <div className="duo-track h-5">
+            <div className="duo-fill" style={{ width: `${progressPct}%`, background: 'var(--color-duo-purple)' }} />
           </div>
         </div>
-        <div className="rounded-full bg-fuchsia-500 px-4 py-2 text-lg font-extrabold text-white shadow">
+        <div className="duo-chip text-lg text-[color:var(--color-duo-purple-dark)]">
           {qi + 1}/{QUESTION_COUNT}
         </div>
       </div>
@@ -157,7 +157,7 @@ export function ReadingQuizScreen({
       </div>
 
       {/* Kad soalan */}
-      <div key={qi} className="animate-pop-in flex flex-1 flex-col items-center justify-center gap-5 rounded-[2rem] bg-white p-6 shadow-xl">
+      <div key={qi} className="duo-card animate-pop-in flex flex-1 flex-col items-center justify-center gap-5 p-6">
         {q.kind === 'susun' && <SusunCard q={q} slots={slots} onPlace={placeCard} onRemove={removeSlot} locked={status !== 'answering'} />}
         {q.kind === 'pilih' && <PilihCard q={q} selected={selected} status={status} onPick={(c) => answerChoice(c, q.word.word)} />}
         {q.kind === 'hilang' && <HilangCard q={q} selected={selected} status={status} onPick={(c) => answerChoice(c, q.word.syllables[q.missingIndex])} />}
@@ -169,25 +169,21 @@ export function ReadingQuizScreen({
 
       {/* Butang Semak untuk aktiviti susun */}
       {q.kind === 'susun' && status === 'answering' && (
-        <button
-          onClick={checkSusun}
-          disabled={slots.includes(null)}
-          className="rounded-full bg-gradient-to-b from-emerald-400 to-green-500 py-4 text-xl font-extrabold text-white shadow-md transition active:scale-95 disabled:opacity-40"
-        >
+        <button onClick={checkSusun} disabled={slots.includes(null)} className="duo-btn duo-green py-4 text-xl">
           Semak ✅
         </button>
       )}
 
       {/* Maklum balas */}
       {status === 'correct' && (
-        <div className="animate-pop-in rounded-3xl bg-green-500 p-4 text-center text-2xl font-extrabold text-white shadow-lg">
+        <div className="animate-pop-in rounded-3xl bg-[#d7ffb8] p-4 text-center text-2xl font-extrabold text-[color:var(--color-duo-green-dark)]">
           🎉 Betul! Pandai! 🌟
         </div>
       )}
       {status === 'wrong' && (
-        <div className="animate-pop-in flex flex-col gap-3 rounded-3xl bg-white p-5 shadow-lg ring-4 ring-rose-200">
-          <div className="text-center text-xl font-extrabold text-rose-500">Cuba lagi lain kali! 💪</div>
-          <div className="flex items-center justify-center gap-2 rounded-2xl bg-amber-50 p-3">
+        <div className="animate-pop-in flex flex-col gap-3 rounded-3xl bg-[#ffe3e3] p-5">
+          <div className="text-center text-xl font-extrabold text-[color:var(--color-duo-red-dark)]">Cuba lagi lain kali! 💪</div>
+          <div className="flex items-center justify-center gap-2 rounded-2xl bg-white p-3">
             <span className="text-2xl">💡</span>
             <p className="text-lg font-semibold text-slate-700">{solutionText(q)}</p>
           </div>
@@ -196,7 +192,7 @@ export function ReadingQuizScreen({
               playTap()
               goNext()
             }}
-            className="rounded-full bg-gradient-to-b from-fuchsia-400 to-fuchsia-600 py-4 text-xl font-extrabold text-white shadow-md transition active:scale-95"
+            className="duo-btn duo-red py-4 text-xl"
           >
             Teruskan ➡️
           </button>
@@ -243,11 +239,11 @@ function ChoiceGrid({
       {choices.map((choice) => {
         const isAnswer = choice === answer
         const isPicked = choice === selected
-        let cls = 'bg-gradient-to-b from-fuchsia-400 to-fuchsia-600 text-white'
+        let cls = 'duo-btn duo-purple'
         if (status !== 'answering') {
-          if (isAnswer) cls = 'bg-gradient-to-b from-emerald-400 to-green-500 text-white ring-4 ring-green-300'
-          else if (isPicked) cls = 'bg-gradient-to-b from-rose-400 to-rose-500 text-white animate-shake'
-          else cls = 'bg-slate-200 text-slate-400'
+          if (isAnswer) cls = 'duo-btn duo-green'
+          else if (isPicked) cls = 'duo-btn duo-red animate-shake'
+          else cls = 'rounded-2xl bg-slate-100 text-slate-400'
         }
         return (
           <button
@@ -257,7 +253,7 @@ function ChoiceGrid({
               onPick(choice)
             }}
             disabled={status !== 'answering'}
-            className={`rounded-3xl px-4 py-5 font-extrabold shadow-md transition active:scale-95 ${big ? 'text-3xl sm:text-4xl' : 'text-xl sm:text-2xl'} ${cls}`}
+            className={`px-4 py-5 font-extrabold ${big ? 'text-3xl sm:text-4xl' : 'text-xl sm:text-2xl'} ${cls}`}
           >
             {choice}
           </button>
@@ -314,8 +310,8 @@ function SusunCard({
               key={idx}
               onClick={() => onPlace(idx)}
               disabled={used || locked}
-              className={`rounded-2xl px-5 py-4 text-3xl font-extrabold shadow-md transition active:scale-95 ${
-                used ? 'bg-slate-100 text-slate-300' : 'bg-gradient-to-b from-sky-400 to-blue-500 text-white'
+              className={`px-5 py-4 text-3xl font-extrabold ${
+                used ? 'rounded-2xl bg-slate-100 text-slate-300' : 'duo-btn duo-blue'
               }`}
             >
               {syl}
@@ -396,7 +392,7 @@ function DengarCard({
       <h3 className="text-center text-xl font-extrabold text-slate-800">Dengar, kemudian pilih suku kata yang betul 👂</h3>
       <button
         onClick={() => speak(q.syllable)}
-        className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-b from-rose-400 to-pink-500 text-5xl text-white shadow-lg transition active:scale-90"
+        className="duo-btn duo-red h-24 w-24 !rounded-full text-5xl"
         aria-label="Dengar semula"
       >
         🔊

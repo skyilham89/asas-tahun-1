@@ -4,6 +4,23 @@
 /* Playful rounded font for kids */
 @theme {
   --font-sans: 'Baloo 2', 'Comic Sans MS', 'Trebuchet MS', system-ui, sans-serif;
+
+  /* Duolingo-inspired palette (with blue & orange kept as our identity accents) */
+  --color-duo-green: #58cc02;
+  --color-duo-green-dark: #46a302;
+  --color-duo-blue: #1cb0f6;
+  --color-duo-blue-dark: #1595d8;
+  --color-duo-orange: #ff9600;
+  --color-duo-orange-dark: #e07f00;
+  --color-duo-red: #ff4b4b;
+  --color-duo-red-dark: #e23b3b;
+  --color-duo-purple: #ce82ff;
+  --color-duo-purple-dark: #a855e8;
+  --color-duo-yellow: #ffc800;
+  --color-duo-ink: #4b4b4b;
+  --color-duo-wolf: #777777;
+  --color-duo-swan: #e5e5e5;
+  --color-duo-snow: #f7f7f7;
 }
 
 :root {
@@ -27,6 +44,131 @@ body {
 button {
   font-family: inherit;
   cursor: pointer;
+}
+
+/* ---------------------------------------------------------------------------
+ * Duolingo-style component kit
+ * The signature "feel": chunky buttons that sit on a solid bottom edge and
+ * press down when tapped, cards with a 2px outline + bottom shadow, and bold
+ * rounded progress bars. Used across every screen.
+ * ------------------------------------------------------------------------- */
+@layer components {
+  /* Chunky 3D button — the solid bottom edge is the whole trick. */
+  .duo-btn {
+    --_depth: 4px;
+    --_bg: var(--color-duo-blue);
+    --_edge: var(--color-duo-blue-dark);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: none;
+    border-radius: 1rem;
+    background: var(--_bg);
+    color: #fff;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+    box-shadow: 0 var(--_depth) 0 0 var(--_edge);
+    transition:
+      transform 0.07s ease,
+      box-shadow 0.07s ease,
+      filter 0.12s ease;
+  }
+  .duo-btn:hover:not(:disabled) {
+    filter: brightness(1.05);
+  }
+  .duo-btn:active:not(:disabled) {
+    transform: translateY(var(--_depth));
+    box-shadow: 0 0 0 0 var(--_edge);
+  }
+  .duo-btn:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+  .duo-btn-lg {
+    --_depth: 6px;
+  }
+
+  /* Colour variants set the face + the darker bottom edge. */
+  .duo-green {
+    --_bg: var(--color-duo-green);
+    --_edge: var(--color-duo-green-dark);
+  }
+  .duo-blue {
+    --_bg: var(--color-duo-blue);
+    --_edge: var(--color-duo-blue-dark);
+  }
+  .duo-orange {
+    --_bg: var(--color-duo-orange);
+    --_edge: var(--color-duo-orange-dark);
+  }
+  .duo-red {
+    --_bg: var(--color-duo-red);
+    --_edge: var(--color-duo-red-dark);
+  }
+  .duo-purple {
+    --_bg: var(--color-duo-purple);
+    --_edge: var(--color-duo-purple-dark);
+  }
+  .duo-yellow {
+    --_bg: var(--color-duo-yellow);
+    --_edge: #e0ad00;
+    color: var(--color-duo-ink);
+  }
+  /* Neutral button: white face, grey edge, dark ink. */
+  .duo-white {
+    --_bg: #ffffff;
+    --_edge: var(--color-duo-swan);
+    color: var(--color-duo-ink);
+    border: 2px solid var(--color-duo-swan);
+  }
+
+  /* Card / lesson tile — outline + solid bottom shadow. */
+  .duo-card {
+    background: #fff;
+    border: 2px solid var(--color-duo-swan);
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 0 0 var(--color-duo-swan);
+  }
+
+  /* Stat pill in headers (stars, timer, counters). */
+  .duo-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 9999px;
+    border: 2px solid var(--color-duo-swan);
+    background: #fff;
+    padding: 0.4rem 0.9rem;
+    font-weight: 800;
+  }
+
+  /* Progress bar — rounded track with a glossy highlight on the fill. */
+  .duo-track {
+    position: relative;
+    overflow: hidden;
+    border-radius: 9999px;
+    background: var(--color-duo-swan);
+  }
+  .duo-fill {
+    position: relative;
+    height: 100%;
+    border-radius: 9999px;
+    background: var(--color-duo-green);
+    transition: width 0.5s ease;
+  }
+  .duo-fill::after {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    right: 0.4rem;
+    top: 0.18rem;
+    height: 30%;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.45);
+  }
 }
 
 /* ---- Animations ---- */
