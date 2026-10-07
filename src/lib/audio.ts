@@ -59,26 +59,75 @@ export function playTap() {
 // ---------------------------------------------------------------------------
 // Text-to-Speech
 // ---------------------------------------------------------------------------
-function pickMalayVoice(): SpeechSynthesisVoice | undefined {
-  const voices = window.speechSynthesis?.getVoices?.() ?? []
+
+// Senarai suara dimuatkan secara tak segerak oleh pelayar. Kita simpan (cache)
+// dan "panaskan" awal supaya tidak kosong semasa ketikan pertama pengguna
+// (punca biasa "tiada bunyi" di Safari / pelayar lain selain localhost).
+let cachedVoices: SpeechSynthesisVoice[] = []
+
+function refreshVoices() {
+  const v = window.speechSynthesis?.getVoices?.() ?? []
+  if (v.length) cachedVoices = v
+}
+
+if (typeof window !== 'undefined' && window.speechSynthesis) {
+  refreshVoices()
+  // Event ini terpicu apabila senarai suara siap dimuatkan.
+  window.speechSynthesis.addEventListener?.('voiceschanged', refreshVoices)
+}
+
+function pickVoice(): SpeechSynthesisVoice | undefined {
+  if (!cachedVoices.length) refreshVoices()
+  const voices = cachedVoices
   return (
     voices.find((v) => /ms-?MY|^ms\b/i.test(v.lang)) ||
     voices.find((v) => /id-?ID|^id\b/i.test(v.lang)) || // Bahasa Indonesia paling hampir
-    voices.find((v) => /^en-?/i.test(v.lang))
+    voices.find((v) => /^en-?/i.test(v.lang)) || // seterusnya Inggeris
+    voices[0] // akhir sekali: apa-apa suara yang ada supaya tetap berbunyi
   )
+}
+
+function utter(text: string, voice: SpeechSynthesisVoice | undefined) {
+  const synth = window.speechSynthesis
+  if (!synth) return
+  const u = new SpeechSynthesisUtterance(text)
+  if (voice) {
+    u.voice = voice
+    u.lang = voice.lang
+  } else {
+    // Tiada suara dikenali — biar pelayar guna suara lalai (jangan paksa ms-MY
+    // kerana sesetengah pelayar terus senyap jika tiada suara ms-MY).
+    u.lang = 'ms-MY'
+  }
+  u.rate = 0.9
+  u.pitch = 1.1
+  synth.speak(u)
 }
 
 export function speak(text: string) {
   const synth = window.speechSynthesis
   if (!synth) return
   synth.cancel()
-  const u = new SpeechSynthesisUtterance(text)
-  const voice = pickMalayVoice()
-  if (voice) u.voice = voice
-  u.lang = voice?.lang || 'ms-MY'
-  u.rate = 0.9
-  u.pitch = 1.1
-  synth.speak(u)
+
+  const voice = pickVoice()
+  if (voice || cachedVoices.length) {
+    utter(text, voice)
+    return
+  }
+
+  // Suara belum siap dimuatkan: cuba sekali lagi sebaik sahaja ia tersedia.
+  const once = () => {
+    refreshVoices()
+    synth.removeEventListener?.('voiceschanged', once)
+    utter(text, pickVoice())
+  }
+  synth.addEventListener?.('voiceschanged', once)
+  // Jaring keselamatan jika event tidak terpicu.
+  setTimeout(() => {
+    if (!cachedVoices.length) return
+    synth.removeEventListener?.('voiceschanged', once)
+    utter(text, pickVoice())
+  }, 250)
 }
 
 export function stopSpeaking() {
