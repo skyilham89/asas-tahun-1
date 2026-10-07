@@ -6,7 +6,7 @@ export function SpeakerButton({ text, className = '' }: { text: string; classNam
     <button
       onClick={() => speak(text)}
       aria-label="Dengar soalan"
-      className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white text-2xl shadow-md transition active:scale-90 ${className}`}
+      className={`duo-btn duo-white h-14 w-14 shrink-0 !rounded-full text-2xl ${className}`}
     >
       🔊
     </button>

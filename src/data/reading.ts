@@ -14,12 +14,16 @@ export interface ReadingPassage {
   questions: { q: string; choices: string[]; answer: string }[]
 }
 
+export type DuoColor = 'green' | 'blue' | 'orange' | 'red' | 'purple'
+
 export interface ReadingLevel {
   level: number
   title: string
   subtitle: string
   emoji: string
   gradient: string
+  /** Solid Duolingo-style colour for the level tile */
+  color: DuoColor
   /** Perkataan untuk Mod Belajar & Kuiz (Peringkat 2–4). */
   words: ReadingWord[]
   /** Carta suku kata untuk Peringkat 1 (baris vokal + KV). */
@@ -42,6 +46,7 @@ export const READING_LEVELS: ReadingLevel[] = [
     subtitle: 'Vokal & Suku Kata (KV)',
     emoji: '🅰️',
     gradient: 'from-rose-400 to-pink-500',
+    color: 'red',
     words: [],
     // 15 baris × 5 = 75 suku kata untuk variasi yang luas.
     syllableChart: [
@@ -68,6 +73,7 @@ export const READING_LEVELS: ReadingLevel[] = [
     subtitle: 'Perkataan KV + KV',
     emoji: '📗',
     gradient: 'from-amber-400 to-orange-500',
+    color: 'orange',
     words: [
       { word: 'baju', syllables: ['ba', 'ju'], image: '👕' },
       { word: 'bola', syllables: ['bo', 'la'], image: '⚽' },
@@ -112,6 +118,7 @@ export const READING_LEVELS: ReadingLevel[] = [
     subtitle: 'Suku Kata Tertutup (KVK)',
     emoji: '📙',
     gradient: 'from-lime-400 to-green-500',
+    color: 'green',
     words: [
       { word: 'bas', syllables: ['bas'], image: '🚌' },
       { word: 'jam', syllables: ['jam'], image: '⏰' },
@@ -157,6 +164,7 @@ export const READING_LEVELS: ReadingLevel[] = [
     subtitle: 'Digraf & Diftong (ng, ny, ai, au)',
     emoji: '📕',
     gradient: 'from-sky-400 to-blue-500',
+    color: 'blue',
     words: [
       { word: 'bunga', syllables: ['bu', 'nga'], image: '🌸' },
       { word: 'payung', syllables: ['pa', 'yung'], image: '☂️' },
@@ -201,6 +209,7 @@ export const READING_LEVELS: ReadingLevel[] = [
     subtitle: 'Ayat & Kefahaman',
     emoji: '📚',
     gradient: 'from-violet-400 to-purple-600',
+    color: 'purple',
     words: [],
     passages: [
       {

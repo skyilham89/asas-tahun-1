@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import type { Badge, Profile } from './types'
 import { TOPICS } from './data/topics'
 import { READING_BADGE } from './data/reading'
+import { SCIENCE_BADGE } from './data/science'
 import { getActiveName, loadProfiles, saveProfiles, setActiveName } from './lib/storage'
 import { HomeScreen } from './screens/HomeScreen'
 import { ProfileScreen } from './screens/ProfileScreen'
@@ -11,6 +12,9 @@ import { QuizScreen, type QuizResult } from './screens/QuizScreen'
 import { ReadingLevelScreen, type ReadingMode } from './screens/ReadingLevelScreen'
 import { ReadingLearnScreen } from './screens/ReadingLearnScreen'
 import { ReadingQuizScreen, type ReadingResult } from './screens/ReadingQuizScreen'
+import { ScienceUnitScreen, type ScienceMode } from './screens/ScienceUnitScreen'
+import { ScienceLearnScreen } from './screens/ScienceLearnScreen'
+import { ScienceQuizScreen, type ScienceResult } from './screens/ScienceQuizScreen'
 import { ResultScreen } from './screens/ResultScreen'
 
 type Screen =
@@ -24,6 +28,10 @@ type Screen =
   | { name: 'reading-learn'; level: number }
   | { name: 'reading-quiz'; level: number }
   | { name: 'reading-result'; data: ReadingFinishData }
+  | { name: 'science-units' }
+  | { name: 'science-learn'; level: number }
+  | { name: 'science-quiz'; level: number }
+  | { name: 'science-result'; data: ScienceFinishData }
 
 interface FinishData {
   total: number
@@ -34,6 +42,14 @@ interface FinishData {
 }
 
 interface ReadingFinishData {
+  level: number
+  total: number
+  correct: number
+  starsEarned: number
+  newBadges: Badge[]
+}
+
+interface ScienceFinishData {
   level: number
   total: number
   correct: number
@@ -119,6 +135,31 @@ export default function App() {
     })
   }
 
+  // ---- Tamat kuiz Sains ----
+  function handleScienceFinish(result: ScienceResult) {
+    if (!activeProfile) return
+    const starsEarned = result.correct
+
+    const newProgress = { ...activeProfile.progress }
+    newProgress['sains'] = (newProgress['sains'] ?? 0) + result.correct
+
+    const newBadges: Badge[] = []
+    const reached = newProgress['sains'] >= SCIENCE_BADGE.requiredCorrect
+    if (reached && !activeProfile.badges.includes(SCIENCE_BADGE.id)) newBadges.push(SCIENCE_BADGE)
+
+    updateActive((p) => ({
+      ...p,
+      stars: p.stars + starsEarned,
+      progress: newProgress,
+      badges: [...p.badges, ...newBadges.map((b) => b.id)],
+    }))
+
+    setScreen({
+      name: 'science-result',
+      data: { level: result.level, total: result.total, correct: result.correct, starsEarned, newBadges },
+    })
+  }
+
   // ---- Rendering mengikut skrin ----
   switch (screen.name) {
     case 'home':
@@ -153,7 +194,15 @@ export default function App() {
       return (
         <CategoryScreen
           profile={activeProfile}
-          onPick={(c) => setScreen(c === 'matematik' ? { name: 'topics' } : { name: 'reading-levels' })}
+          onPick={(c) =>
+            setScreen(
+              c === 'matematik'
+                ? { name: 'topics' }
+                : c === 'membaca'
+                  ? { name: 'reading-levels' }
+                  : { name: 'science-units' },
+            )
+          }
           onBack={() => setScreen({ name: 'profiles' })}
         />
       )
@@ -232,6 +281,48 @@ export default function App() {
           onReplay={() => setScreen({ name: 'reading-quiz', level: lvl })}
           onPickTopic={() => setScreen({ name: 'reading-levels' })}
           pickLabel="📖 Pilih Peringkat Lain"
+        />
+      )
+    }
+
+    case 'science-units':
+      if (!activeProfile) {
+        setScreen({ name: 'profiles' })
+        return null
+      }
+      return (
+        <ScienceUnitScreen
+          profile={activeProfile}
+          onStart={(level, mode: ScienceMode) =>
+            setScreen(mode === 'belajar' ? { name: 'science-learn', level } : { name: 'science-quiz', level })
+          }
+          onBack={() => setScreen({ name: 'category' })}
+        />
+      )
+
+    case 'science-learn':
+      return <ScienceLearnScreen level={screen.level} onBack={() => setScreen({ name: 'science-units' })} />
+
+    case 'science-quiz':
+      return (
+        <ScienceQuizScreen
+          level={screen.level}
+          onFinish={handleScienceFinish}
+          onQuit={() => setScreen({ name: 'science-units' })}
+        />
+      )
+
+    case 'science-result': {
+      const lvl = screen.data.level
+      return (
+        <ResultScreen
+          total={screen.data.total}
+          correct={screen.data.correct}
+          starsEarned={screen.data.starsEarned}
+          newBadges={screen.data.newBadges}
+          onReplay={() => setScreen({ name: 'science-quiz', level: lvl })}
+          onPickTopic={() => setScreen({ name: 'science-units' })}
+          pickLabel="🔬 Pilih Unit Lain"
         />
       )
     }

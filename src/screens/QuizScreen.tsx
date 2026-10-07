@@ -129,26 +129,29 @@ export function QuizScreen({ mode, onFinish, onQuit }: { mode: QuizMode; onFinis
     : (answered / TOPIC_QUESTIONS) * 100
 
   return (
-    <div className="relative flex min-h-full flex-col gap-4 bg-gradient-to-b from-amber-100 to-sky-100 p-5">
+    <div className="relative flex min-h-full flex-col gap-4 bg-[color:var(--color-duo-snow)] p-5">
       {showConfetti && <Confetti />}
 
       {/* Bar atas */}
       <div className="flex items-center gap-3">
         <BackButton onClick={onQuit} />
         <div className="flex-1">
-          <div className="h-5 overflow-hidden rounded-full bg-white/70 shadow-inner">
+          <div className="duo-track h-5">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${isChallenge ? 'bg-red-400' : 'bg-emerald-400'}`}
-              style={{ width: `${Math.max(0, progressPct)}%` }}
+              className="duo-fill"
+              style={{
+                width: `${Math.max(0, progressPct)}%`,
+                background: isChallenge ? 'var(--color-duo-red)' : 'var(--color-duo-green)',
+              }}
             />
           </div>
         </div>
         {isChallenge ? (
-          <div className={`rounded-full px-4 py-2 text-lg font-extrabold text-white shadow ${timeLeft <= 10 ? 'animate-wiggle bg-red-500' : 'bg-red-400'}`}>
+          <div className={`duo-chip text-lg ${timeLeft <= 10 ? 'animate-wiggle border-[color:var(--color-duo-red)] text-[color:var(--color-duo-red)]' : 'text-[color:var(--color-duo-red)]'}`}>
             ⏱️ {timeLeft}s
           </div>
         ) : (
-          <div className="rounded-full bg-emerald-400 px-4 py-2 text-lg font-extrabold text-white shadow">
+          <div className="duo-chip text-lg text-[color:var(--color-duo-green-dark)]">
             {answered}/{TOPIC_QUESTIONS}
           </div>
         )}
@@ -158,11 +161,13 @@ export function QuizScreen({ mode, onFinish, onQuit }: { mode: QuizMode; onFinis
         <span className="text-xl font-extrabold text-slate-600">
           {topic ? `${topic.emoji} ${topic.title}` : '⏱️ Cabaran Masa'}
         </span>
-        {streak >= 2 && <span className="animate-pop-in rounded-full bg-orange-400 px-3 py-1 text-sm font-extrabold text-white">🔥 {streak} berturut!</span>}
+        {streak >= 2 && (
+          <span className="animate-pop-in rounded-full bg-[color:var(--color-duo-orange)] px-3 py-1 text-sm font-extrabold text-white">🔥 {streak} berturut!</span>
+        )}
       </div>
 
       {/* Kad soalan */}
-      <div key={answered} className="animate-pop-in flex flex-1 flex-col items-center justify-center gap-5 rounded-[2rem] bg-white p-6 shadow-xl">
+      <div key={answered} className="duo-card animate-pop-in flex flex-1 flex-col items-center justify-center gap-5 p-6">
         <div className="flex items-center gap-3">
           <h3 className="text-center text-2xl font-extrabold text-slate-800 sm:text-3xl">{question.prompt}</h3>
           <SpeakerButton text={question.speak} />
@@ -177,11 +182,11 @@ export function QuizScreen({ mode, onFinish, onQuit }: { mode: QuizMode; onFinis
           {question.choices.map((choice) => {
             const isAnswer = choice === question.answer
             const isPicked = choice === selected
-            let cls = 'bg-gradient-to-b from-sky-400 to-blue-500 text-white'
+            let cls = 'duo-btn duo-blue'
             if (status !== 'answering') {
-              if (isAnswer) cls = 'bg-gradient-to-b from-emerald-400 to-green-500 text-white ring-4 ring-green-300'
-              else if (isPicked) cls = 'bg-gradient-to-b from-red-400 to-red-500 text-white animate-shake'
-              else cls = 'bg-slate-200 text-slate-400'
+              if (isAnswer) cls = 'duo-btn duo-green'
+              else if (isPicked) cls = 'duo-btn duo-red animate-shake'
+              else cls = 'rounded-2xl bg-slate-100 text-slate-400'
             }
             return (
               <button
@@ -191,7 +196,7 @@ export function QuizScreen({ mode, onFinish, onQuit }: { mode: QuizMode; onFinis
                   handleAnswer(choice)
                 }}
                 disabled={status !== 'answering'}
-                className={`rounded-3xl px-4 py-5 text-2xl font-extrabold shadow-md transition active:scale-95 sm:text-3xl ${cls}`}
+                className={`px-4 py-5 text-2xl font-extrabold sm:text-3xl ${cls}`}
               >
                 {choice}
               </button>
@@ -202,17 +207,17 @@ export function QuizScreen({ mode, onFinish, onQuit }: { mode: QuizMode; onFinis
 
       {/* Maklum balas */}
       {status === 'correct' && (
-        <div className="animate-pop-in rounded-3xl bg-green-500 p-4 text-center text-2xl font-extrabold text-white shadow-lg">
+        <div className="animate-pop-in rounded-3xl bg-[#d7ffb8] p-4 text-center text-2xl font-extrabold text-[color:var(--color-duo-green-dark)]">
           🎉 Betul! Syabas! 🌟
         </div>
       )}
       {status === 'wrong' && (
-        <div className="animate-pop-in flex flex-col gap-3 rounded-3xl bg-white p-5 shadow-lg ring-4 ring-red-200">
-          <div className="text-center text-xl font-extrabold text-red-500">Cuba lagi lain kali! 💪</div>
-          <div className="flex items-start gap-2 rounded-2xl bg-amber-50 p-3">
+        <div className="animate-pop-in flex flex-col gap-3 rounded-3xl bg-[#ffe3e3] p-5">
+          <div className="text-center text-xl font-extrabold text-[color:var(--color-duo-red-dark)]">Cuba lagi lain kali! 💪</div>
+          <div className="flex items-start gap-2 rounded-2xl bg-white p-3">
             <span className="text-2xl">💡</span>
             <p className="text-lg font-semibold text-slate-700">
-              Jawapan betul: <span className="font-extrabold text-emerald-600">{question.answer}</span>
+              Jawapan betul: <span className="font-extrabold text-[color:var(--color-duo-green-dark)]">{question.answer}</span>
               <br />
               {question.solution}
             </p>
@@ -222,7 +227,7 @@ export function QuizScreen({ mode, onFinish, onQuit }: { mode: QuizMode; onFinis
               playTap()
               goNext(answered)
             }}
-            className="rounded-full bg-gradient-to-b from-sky-400 to-blue-500 py-4 text-xl font-extrabold text-white shadow-md transition active:scale-95"
+            className="duo-btn duo-red py-4 text-xl"
           >
             Teruskan ➡️
           </button>

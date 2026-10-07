@@ -5,6 +5,9 @@ export type TopicId =
   | 'masa'
   | 'bentuk'
 
+/** Duolingo-style solid colour name — maps to a `duo-*` button variant. */
+export type DuoColor = 'green' | 'blue' | 'orange' | 'red' | 'purple'
+
 export interface Topic {
   id: TopicId
   title: string
@@ -12,6 +15,8 @@ export interface Topic {
   emoji: string
   /** Tailwind gradient classes for the topic card */
   gradient: string
+  /** Solid Duolingo-style colour for the lesson tile */
+  color: DuoColor
   badge: Badge
 }
 

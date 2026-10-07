@@ -17,18 +17,16 @@ export function TopicScreen({
   onBack: () => void
 }) {
   return (
-    <div className="flex min-h-full flex-col gap-5 bg-gradient-to-b from-sky-200 to-indigo-200 p-6">
+    <div className="flex min-h-full flex-col gap-5 bg-[color:var(--color-duo-snow)] p-6">
       <div className="flex items-center gap-3">
         <BackButton onClick={onBack} />
         <div className="flex-1">
-          <h2 className="text-2xl font-extrabold text-indigo-800 sm:text-3xl">
+          <h2 className="text-2xl font-extrabold text-slate-700 sm:text-3xl">
             Hai {profile.avatar} {profile.name}!
           </h2>
-          <p className="font-semibold text-indigo-600">Pilih tajuk untuk berlatih</p>
+          <p className="font-bold text-slate-500">Pilih tajuk untuk berlatih</p>
         </div>
-        <div className="rounded-full bg-amber-400 px-4 py-2 text-lg font-extrabold text-white shadow">
-          ⭐ {profile.stars}
-        </div>
+        <div className="duo-chip text-lg text-[color:var(--color-duo-orange)]">⭐ {profile.stars}</div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -42,12 +40,12 @@ export function TopicScreen({
                 playTap()
                 onStart({ kind: 'topic', topicId: t.id })
               }}
-              className={`animate-pop-in flex items-center gap-4 rounded-3xl bg-gradient-to-br ${t.gradient} p-5 text-left text-white shadow-lg transition active:scale-95`}
+              className={`duo-btn duo-${t.color} animate-pop-in gap-4 p-5 !justify-start text-left`}
             >
               <span className="text-5xl sm:text-6xl">{t.emoji}</span>
               <div className="flex-1">
                 <div className="text-xl font-extrabold sm:text-2xl">{t.title}</div>
-                <div className="font-semibold text-white/90">{t.subtitle}</div>
+                <div className="font-bold text-white/90">{t.subtitle}</div>
                 <div className="mt-1 text-sm font-bold text-white/90">
                   {unlocked ? `${t.badge.emoji} ${t.badge.name}` : `Betul: ${correct}/${t.badge.requiredCorrect} → ${t.badge.emoji}`}
                 </div>
@@ -62,12 +60,12 @@ export function TopicScreen({
           playTap()
           onStart({ kind: 'challenge' })
         }}
-        className="animate-pop-in mt-1 flex items-center justify-center gap-3 rounded-3xl bg-gradient-to-r from-fuchsia-500 to-red-500 p-5 text-white shadow-lg transition active:scale-95"
+        className="duo-btn duo-red animate-pop-in mt-1 gap-3 p-5 !justify-start text-left"
       >
         <span className="text-4xl">⏱️</span>
-        <div className="text-left">
+        <div>
           <div className="text-xl font-extrabold sm:text-2xl">Cabaran Masa!</div>
-          <div className="font-semibold text-white/90">Berapa banyak boleh jawab dalam 60 saat?</div>
+          <div className="font-bold text-white/90">Berapa banyak boleh jawab dalam 60 saat?</div>
         </div>
       </button>
     </div>
