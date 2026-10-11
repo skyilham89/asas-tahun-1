@@ -66,6 +66,12 @@ export interface Question {
   prompt: string
   /** Teks untuk dibaca kuat oleh Text-to-Speech. */
   speak: string
+  /**
+   * Pilihan: senarai serpihan teks untuk DIGUBAH daripada klip audio pra-rakam
+   * (dimainkan berturutan). Digunakan apabila ayat penuh terlalu banyak variasi
+   * untuk dirakam (cth banding nombor rawak). Setiap serpihan mesti ada klipnya.
+   */
+  speakParts?: string[]
   visual: QuestionVisual
   choices: string[]
   answer: string

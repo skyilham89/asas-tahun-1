@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
+/* Jawi/Arabic naskh font — Scheherazade New has full Malay Jawi coverage
+ * (چ ڠ ڤ ݢ ۏ ڽ) so connected letter forms render correctly in the browser. */
+@import url('https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap');
 @import 'tailwindcss';
 
 /* Playful rounded font for kids */
@@ -44,6 +47,15 @@ body {
 button {
   font-family: inherit;
   cursor: pointer;
+}
+
+/* Tulisan Jawi — font naskh + susunan kanan-ke-kiri (RTL). `isolate` memastikan
+ * huruf Jawi tidak bercampur aduk dengan teks Rumi/emoji di sekelilingnya. */
+.jawi {
+  font-family: 'Scheherazade New', 'Noto Naskh Arabic', 'Amiri', serif;
+  direction: rtl;
+  unicode-bidi: isolate;
+  line-height: 1.8;
 }
 
 /* ---------------------------------------------------------------------------

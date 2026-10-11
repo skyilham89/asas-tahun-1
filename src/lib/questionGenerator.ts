@@ -48,10 +48,13 @@ function genNombor(): Question {
     const bigger = Math.random() < 0.5
     const answer = bigger ? Math.max(a, b) : Math.min(a, b)
     const word = bigger ? 'lebih BESAR' : 'lebih KECIL'
+    const bandingPrefix = `Nombor mana ${bigger ? 'lebih besar' : 'lebih kecil'}?`
     return {
       topicId: 'nombor',
       prompt: `Nombor mana ${word}?`,
-      speak: `Nombor mana ${bigger ? 'lebih besar' : 'lebih kecil'}? ${a} atau ${b}?`,
+      speak: `${bandingPrefix} ${a} atau ${b}?`,
+      // Digubah daripada klip: awalan + nombor + "atau" + nombor (nombor rawak 1–100).
+      speakParts: [bandingPrefix, String(a), 'atau', String(b)],
       visual: { kind: 'none' },
       choices: shuffle([String(a), String(b)]),
       answer: String(answer),

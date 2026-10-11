@@ -1,5 +1,9 @@
 // Kesan bunyi ringkas melalui Web Audio API (tiada fail audio diperlukan)
-// dan bacaan soalan melalui Web Speech API (Text-to-Speech).
+// dan bacaan soalan melalui klip audio pra-rakam (paling natural & sama di
+// semua peranti). Jika klip tiada untuk sesuatu teks (cth soalan matematik
+// dinamik), ia jatuh balik ke Web Speech API (TTS peranti).
+
+import ttsManifest from '../data/ttsManifest.json'
 
 let ctx: AudioContext | null = null
 
@@ -110,15 +114,48 @@ if (typeof window !== 'undefined' && window.speechSynthesis) {
   window.speechSynthesis.addEventListener?.('voiceschanged', refreshVoices)
 }
 
+// Beri markah setiap suara supaya kita pilih yang paling NATURAL, bukan sekadar
+// yang pertama dijumpai. Keutamaan: bahasa yang betul (ms, kemudian id yang
+// hampir sama) + suara berkualiti tinggi (Google/neural/enhanced/online).
+// Suara macOS "compact" (cth Amira) bunyi robotik; suara Google dalam talian
+// (cth "Google Bahasa Indonesia") jauh lebih semula jadi — jadi kita utamakannya.
+function scoreVoice(v: SpeechSynthesisVoice): number {
+  const lang = (v.lang || '').toLowerCase()
+  const name = (v.name || '').toLowerCase()
+  let score = 0
+
+  // Padanan bahasa (perkataan asas Melayu = Indonesia, jadi id sangat hampir).
+  if (/ms[-_]?my|^ms\b/.test(lang)) score += 1000
+  else if (/id[-_]?id|^id\b/.test(lang)) score += 800
+  else if (/^en[-_]?/.test(lang)) score += 100
+
+  // Bonus kualiti: suara neural / Google / enhanced bunyi lebih semula jadi.
+  if (/google|natural|neural|wavenet|enhanced|premium|siri/.test(name)) score += 400
+
+  // Suara dalam talian (localService === false) biasanya lebih berkualiti
+  // daripada suara "compact" tempatan.
+  if (v.localService === false) score += 120
+
+  return score
+}
+
 function pickVoice(): SpeechSynthesisVoice | undefined {
   if (!cachedVoices.length) refreshVoices()
   const voices = cachedVoices
-  return (
-    voices.find((v) => /ms-?MY|^ms\b/i.test(v.lang)) ||
-    voices.find((v) => /id-?ID|^id\b/i.test(v.lang)) || // Bahasa Indonesia paling hampir
-    voices.find((v) => /^en-?/i.test(v.lang)) || // seterusnya Inggeris
-    voices[0] // akhir sekali: apa-apa suara yang ada supaya tetap berbunyi
-  )
+  if (!voices.length) return undefined
+  // Pilih markah tertinggi; jika seri, kekal pada yang pertama.
+  let best = voices[0]
+  let bestScore = scoreVoice(best)
+  for (const v of voices) {
+    const s = scoreVoice(v)
+    if (s > bestScore) {
+      best = v
+      bestScore = s
+    }
+  }
+  // Jika tiada satu pun suara relevan (ms/id/en), biar undefined supaya
+  // utter() guna lalai pelayar.
+  return bestScore > 0 ? best : voices[0]
 }
 
 function utter(text: string, voice: SpeechSynthesisVoice | undefined) {
@@ -133,12 +170,16 @@ function utter(text: string, voice: SpeechSynthesisVoice | undefined) {
     // kerana sesetengah pelayar terus senyap jika tiada suara ms-MY).
     u.lang = 'ms-MY'
   }
-  u.rate = 0.9
-  u.pitch = 1.1
+  // Sedikit perlahan + nada hampir semula jadi: lebih jelas & mesra untuk
+  // kanak-kanak, dan mengurangkan kesan "robot".
+  u.rate = 0.92
+  u.pitch = 1.05
   synth.speak(u)
 }
 
-export function speak(text: string) {
+// Bacaan menerusi Web Speech API (TTS peranti) — digunakan sebagai sandaran
+// apabila tiada klip pra-rakam untuk teks berkenaan.
+function webSpeak(text: string) {
   const synth = window.speechSynthesis
   if (!synth) return
   synth.cancel()
@@ -164,6 +205,85 @@ export function speak(text: string) {
   }, 250)
 }
 
+// ---------------------------------------------------------------------------
+// Klip audio pra-rakam (MP3 statik di public/tts/) — suara paling natural dan
+// sama di semua peranti/pelayar. Manifest memetakan teks → nama fail.
+// ---------------------------------------------------------------------------
+const CLIP_MANIFEST = ttsManifest as Record<string, string>
+const CLIP_BASE = (import.meta.env.BASE_URL || '/') + 'tts/'
+let currentAudio: HTMLAudioElement | null = null
+// Token jujukan: setiap main baharu / stop menaikkannya supaya onended lama
+// berhenti meneruskan jujukan klip yang telah dibatalkan.
+let playToken = 0
+
+/**
+ * Baca teks dengan suara paling natural yang ada:
+ *  1. Klip pra-rakam untuk teks penuh (paling baik), jika ada.
+ *  2. Jika `parts` diberi & setiap serpihan ada klip → gubah (main berturutan).
+ *     Berguna untuk teks dinamik (cth banding nombor rawak).
+ *  3. Jika tidak → TTS peranti (Web Speech API).
+ */
+export function speak(text: string, parts?: string[]) {
+  const key = text.trim()
+  const file = CLIP_MANIFEST[key]
+  if (file) {
+    playClips([file], text)
+    return
+  }
+
+  // Cuba gubah daripada serpihan — hanya jika SEMUA serpihan ada klipnya.
+  if (parts && parts.length) {
+    const files: string[] = []
+    let complete = true
+    for (const p of parts) {
+      const f = CLIP_MANIFEST[p.trim()]
+      if (!f) {
+        complete = false
+        break
+      }
+      files.push(f)
+    }
+    if (complete) {
+      playClips(files, text)
+      return
+    }
+  }
+
+  // Tiada klip (cth teks dinamik tanpa serpihan) → guna TTS peranti.
+  webSpeak(text)
+}
+
+// Mainkan satu atau beberapa klip berturutan. `fallbackText` dibaca oleh TTS
+// peranti jika klip PERTAMA gagal dimuatkan/dimainkan (cth autoplay disekat).
+function playClips(files: string[], fallbackText: string) {
+  stopSpeaking()
+  const token = ++playToken
+  let i = 0
+  const playNext = () => {
+    if (token !== playToken) return // dibatalkan oleh stop / main baharu
+    if (i >= files.length) {
+      currentAudio = null
+      return
+    }
+    const first = i === 0
+    const audio = new Audio(CLIP_BASE + files[i++])
+    currentAudio = audio
+    audio.onended = playNext
+    audio.play().catch(() => {
+      if (token !== playToken) return
+      currentAudio = null
+      // Hanya jatuh balik ke TTS jika klip pertama gagal; jika tidak, biar senyap.
+      if (first) webSpeak(fallbackText)
+    })
+  }
+  playNext()
+}
+
 export function stopSpeaking() {
+  playToken++
+  if (currentAudio) {
+    currentAudio.pause()
+    currentAudio = null
+  }
   window.speechSynthesis?.cancel()
 }

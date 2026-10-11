@@ -2,7 +2,7 @@ import type { Profile } from '../types'
 import { playTap } from '../lib/audio'
 import { BackButton } from './ProfileScreen'
 
-export type Category = 'matematik' | 'membaca' | 'sains'
+export type Category = 'matematik' | 'membaca' | 'sains' | 'jawi'
 
 export function CategoryScreen({
   profile,
@@ -56,11 +56,23 @@ export function CategoryScreen({
             playTap()
             onPick('sains')
           }}
-          className="duo-btn duo-btn-lg duo-green animate-pop-in flex-col gap-3 p-8 sm:col-span-2"
+          className="duo-btn duo-btn-lg duo-green animate-pop-in flex-col gap-3 p-8"
         >
           <span className="text-7xl sm:text-8xl">🔬</span>
           <span className="text-3xl font-extrabold">Sains</span>
           <span className="font-bold text-white/90">Deria, haiwan, tumbuhan & benda hidup</span>
+        </button>
+
+        <button
+          onClick={() => {
+            playTap()
+            onPick('jawi')
+          }}
+          className="duo-btn duo-btn-lg duo-orange animate-pop-in flex-col gap-3 p-8"
+        >
+          <span className="jawi text-6xl font-bold sm:text-7xl">جاوي</span>
+          <span className="text-3xl font-extrabold">✍️ Jawi</span>
+          <span className="font-bold text-white/90">Huruf, sambung & baca perkataan</span>
         </button>
       </div>
     </div>
