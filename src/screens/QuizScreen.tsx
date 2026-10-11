@@ -68,7 +68,7 @@ export function QuizScreen({ mode, onFinish, onQuit }: { mode: QuizMode; onFinis
 
   // Baca soalan secara automatik untuk murid yang belum lancar membaca.
   useEffect(() => {
-    const t = setTimeout(() => speak(question.speak), 350)
+    const t = setTimeout(() => speak(question.speak, question.speakParts), 350)
     return () => clearTimeout(t)
   }, [question])
 
@@ -170,11 +170,11 @@ export function QuizScreen({ mode, onFinish, onQuit }: { mode: QuizMode; onFinis
       <div key={answered} className="duo-card animate-pop-in flex flex-1 flex-col items-center justify-center gap-5 p-6">
         <div className="flex items-center gap-3">
           <h3 className="text-center text-2xl font-extrabold text-slate-800 sm:text-3xl">{question.prompt}</h3>
-          <SpeakerButton text={question.speak} />
+          <SpeakerButton text={question.speak} parts={question.speakParts} />
         </div>
 
         <div className="flex min-h-[8rem] items-center justify-center">
-          <QuestionVisualView visual={question.visual} />
+          <QuestionVisualView key={`${question.prompt}|${question.answer}`} visual={question.visual} />
         </div>
 
         {/* Pilihan jawapan */}

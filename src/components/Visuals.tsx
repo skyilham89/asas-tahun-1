@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import type { QuestionVisual, ShapeKind } from '../types'
+import { playTap } from '../lib/audio'
 
 /** Lukis muka jam analog dengan SVG. */
 function ClockFace({ hour, minute }: { hour: number; minute: number }) {
@@ -147,20 +149,67 @@ function ShapeDrawing({ shape }: { shape: ShapeKind }) {
   )
 }
 
-function ItemGroups({ emoji, groups, op }: { emoji: string; groups: number[]; op: '+' | '-' }) {
-  if (op === '-') {
-    const [total, remove] = groups
-    return (
-      <div className="flex flex-wrap items-center justify-center gap-1 text-4xl sm:text-5xl">
-        {Array.from({ length: total }, (_, i) => (
-          <span key={i} className={i >= total - remove ? 'opacity-30 grayscale' : ''}>
-            {i >= total - remove ? '✖️' : emoji}
-          </span>
-        ))}
-      </div>
-    )
+/**
+ * Tolak interaktif ("ambil keluar"): tunjuk SEMUA buah dahulu, kemudian murid
+ * mengetik untuk membuang `remove` biji satu per satu — jadi mereka sendiri yang
+ * membuat operasi tolak dan mengira baki, bukannya diberi jawapan. Ketik buah
+ * yang telah dibuang untuk memulihkannya (boleh betulkan tersilap).
+ */
+function TakeAway({ emoji, total, remove }: { emoji: string; total: number; remove: number }) {
+  const [gone, setGone] = useState<boolean[]>(() => Array(total).fill(false))
+  const goneCount = gone.reduce((n, g) => n + (g ? 1 : 0), 0)
+  const done = goneCount >= remove
+
+  const toggle = (i: number) => {
+    setGone((prev) => {
+      // Pulihkan jika sudah dibuang.
+      if (prev[i]) {
+        const next = [...prev]
+        next[i] = false
+        return next
+      }
+      // Jangan benarkan buang lebih daripada yang sepatutnya.
+      if (prev.reduce((n, g) => n + (g ? 1 : 0), 0) >= remove) return prev
+      const next = [...prev]
+      next[i] = true
+      return next
+    })
+    playTap()
   }
 
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <div
+        className={`duo-chip text-center text-sm font-extrabold sm:text-base ${
+          done ? 'text-[color:var(--color-duo-green-dark)]' : 'text-slate-600'
+        }`}
+      >
+        {done ? '✅ Berapa yang tinggal? Kira! 🤔' : `👆 Ketik untuk buang ${remove} ${emoji} · ${goneCount}/${remove}`}
+      </div>
+      <div className="flex flex-wrap items-center justify-center gap-2 text-4xl sm:text-5xl">
+        {gone.map((isGone, i) => (
+          <button
+            key={i}
+            onClick={() => toggle(i)}
+            aria-label={isGone ? 'Pulihkan buah' : 'Buang buah'}
+            className={`relative transition-transform active:scale-90 ${
+              isGone ? 'opacity-40' : done ? 'animate-bounce-soft' : 'hover:scale-110'
+            }`}
+          >
+            <span className={isGone ? 'grayscale' : ''}>{emoji}</span>
+            {isGone && (
+              <span className="pointer-events-none absolute inset-0 flex items-center justify-center font-black text-[color:var(--color-duo-red)]">
+                ✕
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function ItemGroups({ emoji, groups }: { emoji: string; groups: number[] }) {
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 text-4xl sm:text-5xl">
       <span className="flex flex-wrap justify-center gap-1 rounded-2xl bg-white/60 p-2">
@@ -227,7 +276,11 @@ export function QuestionVisualView({ visual }: { visual: QuestionVisual }) {
     case 'none':
       return null
     case 'items':
-      return <ItemGroups emoji={visual.emoji} groups={visual.groups} op={visual.op} />
+      return visual.op === '-' ? (
+        <TakeAway emoji={visual.emoji} total={visual.groups[0]} remove={visual.groups[1]} />
+      ) : (
+        <ItemGroups emoji={visual.emoji} groups={visual.groups} />
+      )
     case 'clock':
       return <ClockFace hour={visual.hour} minute={visual.minute} />
     case 'shape':

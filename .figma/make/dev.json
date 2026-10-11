@@ -2,30 +2,26 @@
   "pointAndEdit": {
     "priorityPaths": {
       "prefer": [
-        "src/screens/**/*.{tsx,ts}",
-        "src/App.tsx",
-        "src/components/**/*.{tsx,ts}"
+        "src/screens/**/*.tsx",
+        "src/components/**/*.tsx",
+        "src/App.tsx"
       ],
       "deprioritize": [
-        "src/index.css",
-        "src/lib/**/*.{ts,tsx}",
-        "src/data/**/*.{ts,tsx}",
+        "src/lib/**",
+        "src/data/**",
         "src/types.ts",
-        "src/main.tsx"
+        "src/main.tsx",
+        "src/index.css"
       ],
       "exclude": [
-        "**/*.figma.ts",
-        "**/*.figma.tsx",
-        "**/*.figma.js",
-        "**/*.figma.jsx",
-        "**/*.figma.template.*",
-        "**/*.test.{ts,tsx}",
-        "**/*.spec.{ts,tsx}",
-        "dist/**",
-        "public/**",
         ".figma/**",
+        "public/**",
+        "dist/**",
+        ".git/**",
         ".github/**",
-        "node_modules/**"
+        "node_modules/**",
+        "**/*.test.*",
+        "**/*.spec.*"
       ]
     },
     "libraryPaths": {
@@ -37,52 +33,36 @@
     },
     "exclusions": [
       {
-        "glob": "**/*.figma.ts",
-        "reason": "Figma mapping files are Code Connect artifacts, not UI source anchors for point-and-edit."
-      },
-      {
-        "glob": "**/*.figma.tsx",
-        "reason": "Figma mapping files are Code Connect artifacts, not UI source anchors for point-and-edit."
-      },
-      {
-        "glob": "**/*.figma.js",
-        "reason": "Figma mapping files are Code Connect artifacts, not UI source anchors for point-and-edit."
-      },
-      {
-        "glob": "**/*.figma.jsx",
-        "reason": "Figma mapping files are Code Connect artifacts, not UI source anchors for point-and-edit."
-      },
-      {
-        "glob": "**/*.figma.template.*",
-        "reason": "Figma mapping template files are Code Connect artifacts, not UI source anchors for point-and-edit."
-      },
-      {
-        "glob": "**/*.test.{ts,tsx}",
-        "reason": "Test files are not UI source anchors."
-      },
-      {
-        "glob": "**/*.spec.{ts,tsx}",
-        "reason": "Spec files are not UI source anchors."
-      },
-      {
-        "glob": "dist/**",
-        "reason": "Build output — not source."
+        "glob": ".figma/**",
+        "reason": "Figma Make tooling scripts and configuration — not UI source code and must not be selected as a point-and-edit anchor."
       },
       {
         "glob": "public/**",
-        "reason": "Static assets served verbatim; not React component source."
+        "reason": "Static assets served verbatim; not UI source code."
       },
       {
-        "glob": ".figma/**",
-        "reason": "Figma Make configuration directory, not UI component source."
+        "glob": "dist/**",
+        "reason": "Build output; generated files that should never be edited directly."
+      },
+      {
+        "glob": ".git/**",
+        "reason": "Version control internals; not source files."
       },
       {
         "glob": ".github/**",
-        "reason": "CI/CD workflow configuration, not UI source."
+        "reason": "CI/CD workflow configuration; not UI source code."
       },
       {
         "glob": "node_modules/**",
-        "reason": "External dependency code, not editable project source."
+        "reason": "Third-party dependencies installed by the package manager; not editable project source."
+      },
+      {
+        "glob": "**/*.test.*",
+        "reason": "Test files are not UI rendering source anchors."
+      },
+      {
+        "glob": "**/*.spec.*",
+        "reason": "Spec/test files are not UI rendering source anchors."
       }
     ],
     "generated": {
@@ -90,9 +70,9 @@
       "source": "setup-agent.point-and-edit-path-classifier",
       "prompt": "same-turn-setup-subagent-v5",
       "model": "claude-sonnet-4-6",
-      "createdAt": "2026-10-07T00:00:00.000Z",
-      "confidence": 0.95,
-      "explanation": "Single-app Vite + React + TypeScript project with a clear screens/components split, no shared local design-system library, and only react/react-dom as external dependencies, making path classification straightforward and high-confidence."
+      "createdAt": "2026-10-08T00:00:00.000Z",
+      "confidence": 0.97,
+      "explanation": "Single-app React/Vite/TypeScript project with a clear screens/ and components/ structure, no shared design-system library, and no ambiguous monorepo boundaries, enabling high-confidence classification."
     }
   }
 }
